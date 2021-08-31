@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.amos.inventory.constant.SkuDealConstant;
 import com.amos.inventory.core.*;
 import com.amos.inventory.result.*;
 import com.amos.inventory.util.Assert;
@@ -47,7 +48,7 @@ public class InventorySkuRedisDeal extends AbstractInventoryDeal implements Inve
         InventoryNumMapSpiltResult inventoryNumMapSpiltResult = this.splitInventoryNum(inventoryNumMap);
         HashMap<String, String> executorParameters = new HashMap<>();
         String checkFreezeName = inventoryDealKeyCreator.getCheckFreezeName();
-        executorParameters.put("checkFreezeName", checkFreezeName);
+        executorParameters.put(SkuDealConstant.CHECK_FREEZE, checkFreezeName);
         FreezeInventoryResult freezeInventoryResult =
             inventoryRedisExecutor.executorFreezeInventory(inventoryDealKeyCreator.getVersionKey(version),
                 inventoryNumMapSpiltResult.getInventoryKeyList(), inventoryNumMapSpiltResult.getInventoryNum(), executorParameters);
