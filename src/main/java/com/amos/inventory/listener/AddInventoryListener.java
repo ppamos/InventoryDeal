@@ -8,9 +8,9 @@ import com.amos.inventory.result.AddInventoryResult;
  */
 public interface AddInventoryListener extends InventoryListener {
 
-   void beforeAddInventory(Long inventoryId);
+   void beforeAddInventory(String inventoryCode);
 
-   void onErrorDo(Long inventoryId, Exception e);
+   void onErrorDo(String inventoryCode, Exception e);
 
-   void afterAddInventory(Long inventoryId, AddInventoryResult addInventoryResult);
+   void afterAddInventory(String inventoryCode, AddInventoryResult addInventoryResult);
 }

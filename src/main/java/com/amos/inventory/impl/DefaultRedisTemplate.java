@@ -10,6 +10,8 @@ import com.amos.inventory.util.Assert;
 import com.amos.inventory.util.CollectionUtils;
 
 import com.amos.inventory.util.StringUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import redis.clients.jedis.Jedis;
 
 public class DefaultRedisTemplate implements RedisTemplate {
@@ -31,6 +33,16 @@ public class DefaultRedisTemplate implements RedisTemplate {
 		if (args != null && args.length > 0) {
 			List<Object> argList = Arrays.asList(args);
 			argStrings = argList.stream().map(n -> (String) n.toString()).collect(Collectors.toList());
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		try
+		{
+			System.out.println("keys="+mapper.writeValueAsString(keys));
+			System.out.println("args="+mapper.writeValueAsString(args));
+		}
+		catch (JsonProcessingException e)
+		{
+			e.printStackTrace();
 		}
 		return (T) jedis.evalsha(jedis.scriptLoad(lua), keyStrings, argStrings);
 	}

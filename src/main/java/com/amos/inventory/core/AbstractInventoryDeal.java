@@ -57,23 +57,23 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 	protected abstract AckConsumerResult doAckConsumer(String version);
 
-	public void addInventory(Long inventoryId, InventoryLoader inventoryLoader) {
+	public void addInventory(String  inventoryCode, InventoryLoader inventoryLoader) {
 		InventoryLock inventoryLock = null;
 		AddInventoryResult addInventoryResult = null;
 		try {
-			inventoryLock = inventoryLockFactory.getLock(keyCreator.getAddInventoryKey(inventoryId));
+			inventoryLock = inventoryLockFactory.getLock(keyCreator.getAddInventoryKey(inventoryCode));
 			inventoryLock.Lock();
-			this.beforeAddInventory(inventoryId);
+			this.beforeAddInventory(inventoryCode);
 			InventoryLoaderResult inventoryLoaderResult = null;
 
 			try {
-				inventoryLoaderResult = inventoryLoader.loadInventory(inventoryId, loadInventoryNum);
+				inventoryLoaderResult = inventoryLoader.loadInventory(inventoryCode, loadInventoryNum);
 				addInventoryResult = this.doAddInventory(inventoryLoaderResult);
 			} catch (Exception e) {
-				this.onAddErrorDo(e, inventoryId);
+				this.onAddErrorDo(e, inventoryCode);
 				throw e;
 			}
-			this.afterAddInventory(inventoryId, addInventoryResult);
+			this.afterAddInventory(inventoryCode, addInventoryResult);
 		} catch (InventoryLockException e) {
 			LOG.error(GET_LOCK_ERROR_MESSAGE, e);
 		} finally {
@@ -297,26 +297,26 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 		}
 	}
 
-	private void afterAddInventory(Long inventoryId, AddInventoryResult addInventoryResult) {
+	private void afterAddInventory(String inventoryCode, AddInventoryResult addInventoryResult) {
 		if (CollectionUtils.isNotEmpty(addInventoryListeners)) {
 			for (AddInventoryListener addInventoryListener : addInventoryListeners) {
-				addInventoryListener.afterAddInventory(inventoryId, addInventoryResult);
+				addInventoryListener.afterAddInventory(inventoryCode, addInventoryResult);
 			}
 		}
 	}
 
-	private void onAddErrorDo(Exception e, Long inventoryId) {
+	private void onAddErrorDo(Exception e, String inventoryCode) {
 		if (CollectionUtils.isNotEmpty(addInventoryListeners)) {
 			for (AddInventoryListener addInventoryListener : addInventoryListeners) {
-				addInventoryListener.onErrorDo(inventoryId, e);
+				addInventoryListener.onErrorDo(inventoryCode, e);
 			}
 		}
 	}
 
-	private void beforeAddInventory(Long inventoryId) {
+	private void beforeAddInventory(String  inventoryCode) {
 		if (CollectionUtils.isNotEmpty(addInventoryListeners)) {
 			for (AddInventoryListener addInventoryListener : addInventoryListeners) {
-				addInventoryListener.beforeAddInventory(inventoryId);
+				addInventoryListener.beforeAddInventory(inventoryCode);
 			}
 		}
 	}

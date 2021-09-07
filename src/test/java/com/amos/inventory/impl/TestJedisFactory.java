@@ -1,7 +1,7 @@
 package com.amos.inventory.impl;
 
-import com.amos.inventory.core.JedisFactory;
-import redis.clients.jedis.Jedis;
+        import com.amos.inventory.core.JedisFactory;
+        import redis.clients.jedis.Jedis;
 
 public class TestJedisFactory implements JedisFactory
 {

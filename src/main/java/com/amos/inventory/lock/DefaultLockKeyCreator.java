@@ -10,8 +10,9 @@ public class DefaultLockKeyCreator implements InventoryLockKeyCreator{
         return null;
     }
 
-    @Override
-    public String getAddInventoryKey(Long inventoryId) {
+    @Override public String getAddInventoryKey(String inventoryCode)
+    {
         return null;
     }
+
 }

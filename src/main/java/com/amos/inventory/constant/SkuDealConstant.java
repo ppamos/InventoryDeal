@@ -7,4 +7,12 @@ package com.amos.inventory.constant;
 public abstract class SkuDealConstant
 {
     public final static String CHECK_FREEZE="checkFreezeName";
+
+    public final static String DELAY_TIME="delayTime";
+
+    public final static String WAIT_ACK="waitAckName";
+
+    public final static String DEAD_FREEZE="deadCheckFreezeName";
+
+    public final static String DEAD_ACK="deadAckName";
 }

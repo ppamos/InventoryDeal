@@ -5,7 +5,7 @@ package com.amos.inventory.core;
  * @since 2021/8/21 14:38
  */
 public interface InventoryLoaderResult {
-    Long getInventoryId();
+    String getInventoryCode();
 
     Integer getLoadQuantity();
 }
