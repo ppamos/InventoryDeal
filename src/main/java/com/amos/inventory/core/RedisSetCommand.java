@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface RedisSetCommand
 {
-    Long sAdd(String key, String... value);
+    Long sAdd(String key, String... members);
 
     Set<String> sMembers(String key);
 

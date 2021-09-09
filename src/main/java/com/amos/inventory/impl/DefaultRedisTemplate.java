@@ -2,6 +2,7 @@ package com.amos.inventory.impl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.amos.inventory.core.JedisFactory;
@@ -37,5 +38,40 @@ public class DefaultRedisTemplate implements RedisTemplate {
 
 	public String ping() {
 		return jedis.ping();
+	}
+
+	@Override
+	public String hGet(String key, String filed) {
+		return jedis.hget(key, filed);
+	}
+
+	@Override
+	public Long hIncrBy(String key, String fileName, long number) {
+		return jedis.hincrBy(key, fileName, number);
+	}
+
+	@Override
+	public Long sAdd(String key, String... members) {
+		return jedis.sadd(key, members);
+	}
+
+	@Override
+	public Set<String> sMembers(String key) {
+		return jedis.smembers(key);
+	}
+
+	@Override
+	public Boolean sMove(String source, String destination, String member) {
+		return jedis.smove(source, destination, member) == 1L;
+	}
+
+	@Override
+	public Set<String> zRangeByScore(String key, double min, double max) {
+		return jedis.zrangeByScore(key, min, max);
+	}
+
+	@Override
+	public Long zRem(String key, String... members) {
+		return jedis.zrem(key, members);
 	}
 }

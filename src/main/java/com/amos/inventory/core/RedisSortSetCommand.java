@@ -6,5 +6,5 @@ public interface RedisSortSetCommand
 {
     Set<String> zRangeByScore(String key, double min, double max);
 
-    Long zRem(String key, String... filed);
+    Long zRem(String key, String... members);
 }
