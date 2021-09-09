@@ -17,115 +17,132 @@ import com.amos.inventory.util.MapUtils;
  */
 public class InventorySkuRedisDeal extends AbstractInventoryDeal implements InventoryRedisDeal {
 
-    private String magicCode;
+	private String magicCode;
 
-    private String moduleEnglishName;
+	private String moduleEnglishName;
 
-    private RedisTemplateFactory redisTemplateFactory;
+	private RedisTemplateFactory redisTemplateFactory;
 
-    private InventoryRedisExecutor inventoryRedisExecutor;
+	private InventoryRedisExecutor inventoryRedisExecutor;
 
-    private RedisTemplate redisTemplate;
+	private RedisTemplate redisTemplate;
 
-    private InventoryDealKeyCreator inventoryDealKeyCreator;
+	private InventoryDealKeyCreator inventoryDealKeyCreator;
 
-    // 一次冻结sku的个数
-    private int oneTimeMaxFreezeSkuNum = 200;
+	// 一次冻结sku的个数
+	private int oneTimeMaxFreezeSkuNum = 200;
 
-    @Override
-    protected ReleaseInventoryResult doReleaseInventory(String version) {
-        return null;
-    }
+	@Override
+	protected ReleaseInventoryResult doReleaseInventory(String version) {
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(SkuDealConstant.CHECK_FREEZE, inventoryDealKeyCreator.getCheckFreezeName());
+		parameters.put(SkuDealConstant.DEAD_FREEZE, inventoryDealKeyCreator.getDeadCheckFreezeName());
+		ReleaseInventoryResult releaseInventoryResult = inventoryRedisExecutor.executorReleaseInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
+		return releaseInventoryResult;
+	}
 
-    @Override
-    protected ConsumerInventoryResult doConsumerInventory(String version) {
-        return null;
-    }
+	@Override
+	protected ConsumerInventoryResult doConsumerInventory(String version) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(SkuDealConstant.CHECK_FREEZE, inventoryDealKeyCreator.getCheckFreezeName());
+        parameters.put(SkuDealConstant.DEAD_FREEZE, inventoryDealKeyCreator.getDeadCheckFreezeName());
+        parameters.put(SkuDealConstant.WAIT_ACK,inventoryDealKeyCreator.getWaitAckName());
+        ConsumerInventoryResult consumerInventoryResult = inventoryRedisExecutor
+                .executorConsumerInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
+        return consumerInventoryResult;
+	}
 
-    @Override
-    protected FreezeInventoryResult doFreezeInventory(String version, Map<Long, Integer> inventoryNumMap,
-        Map<String, String> parameters) {
-        InventoryNumMapSpiltResult inventoryNumMapSpiltResult = this.splitInventoryNum(inventoryNumMap);
-        HashMap<String, String> executorParameters = new HashMap<>();
-        String checkFreezeName = inventoryDealKeyCreator.getCheckFreezeName();
-        executorParameters.put(SkuDealConstant.CHECK_FREEZE, checkFreezeName);
-        FreezeInventoryResult freezeInventoryResult =
-            inventoryRedisExecutor.executorFreezeInventory(inventoryDealKeyCreator.getVersionKey(version),
-                inventoryNumMapSpiltResult.getInventoryKeyList(), inventoryNumMapSpiltResult.getInventoryNum(), executorParameters);
-        return freezeInventoryResult;
-    }
+	@Override
+	protected FreezeInventoryResult doFreezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters) {
+		InventoryNumMapSpiltResult inventoryNumMapSpiltResult = this.splitInventoryNum(inventoryNumMap);
+		HashMap<String, String> executorParameters = new HashMap<>();
+		String checkFreezeName = inventoryDealKeyCreator.getCheckFreezeName();
+		executorParameters.put(SkuDealConstant.CHECK_FREEZE, checkFreezeName);
+		FreezeInventoryResult freezeInventoryResult = inventoryRedisExecutor.executorFreezeInventory(inventoryDealKeyCreator.getVersionKey(version), inventoryNumMapSpiltResult.getInventoryKeyList(),
+				inventoryNumMapSpiltResult.getInventoryNum(), executorParameters);
+		return freezeInventoryResult;
+	}
 
-    private InventoryNumMapSpiltResult splitInventoryNum(Map<Long, Integer> inventoryNumMap) {
-        Assert.isTrue(MapUtils.isNotEmpty(inventoryNumMap), "inventoryNumMap is null");
-        InventoryNumMapSpiltResult inventoryNumMapSpiltResult = new InventoryNumMapSpiltResult();
-        List<String> inventoryKeyList = new ArrayList<String>();
-        List<Integer> numList = new ArrayList<>();
-        for (Long inventoryId : inventoryNumMap.keySet()) {
-            Assert.noNull(inventoryId, "inventoryId is null");
-            Integer num = inventoryNumMap.get(inventoryId);
-            Assert.isTrue(num != null && num > 0, "inventory num is null");
-            numList.add(num);
-            String inventoryKey = inventoryDealKeyCreator.getInventoryKey(inventoryId);
-            inventoryKeyList.add(inventoryKey);
-        }
-        inventoryNumMapSpiltResult.setInventoryKeyList(inventoryKeyList);
-        inventoryNumMapSpiltResult.setInventoryNum(numList);
-        return inventoryNumMapSpiltResult;
-    }
+	private InventoryNumMapSpiltResult splitInventoryNum(Map<String, Integer> inventoryNumMap) {
+		Assert.isTrue(MapUtils.isNotEmpty(inventoryNumMap), "inventoryNumMap is null");
+		InventoryNumMapSpiltResult inventoryNumMapSpiltResult = new InventoryNumMapSpiltResult();
+		List<String> inventoryKeyList = new ArrayList<String>();
+		List<Integer> numList = new ArrayList<>();
+		for (String inventoryCode : inventoryNumMap.keySet()) {
+			Assert.notEmptyString(inventoryCode, "inventoryCode is null");
+			Integer num = inventoryNumMap.get(inventoryCode);
+			Assert.isTrue(num != null && num > 0, "inventory num is null");
+			numList.add(num);
+			String inventoryKey = inventoryDealKeyCreator.getInventoryKey(inventoryCode);
+			inventoryKeyList.add(inventoryKey);
+		}
+		inventoryNumMapSpiltResult.setInventoryKeyList(inventoryKeyList);
+		inventoryNumMapSpiltResult.setInventoryNum(numList);
+		return inventoryNumMapSpiltResult;
+	}
 
-    @Override
-    protected AddInventoryResult doAddInventory(InventoryLoaderResult inventoryLoaderResult) {
-        return null;
-    }
+	@Override
+	protected AddInventoryResult doAddInventory(InventoryLoaderResult inventoryLoaderResult) {
+        String inventoryCode = inventoryLoaderResult.getInventoryCode();
+        Integer loadQuantity = inventoryLoaderResult.getLoadQuantity();
+        AddInventoryResult addInventoryResult = inventoryRedisExecutor
+                .executorAddInventory(inventoryDealKeyCreator.getInventoryKey(inventoryCode), loadQuantity);
+        return addInventoryResult;
+	}
 
-    @Override
-    protected AckConsumerResult doAckConsumer(String version) {
-        return null;
-    }
+	@Override
+	protected AckConsumerResult doAckConsumer(String version) {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put(SkuDealConstant.WAIT_ACK,inventoryDealKeyCreator.getWaitAckName());
+        parameters.put(SkuDealConstant.DEAD_ACK,inventoryDealKeyCreator.getDeadAckName());
+        AckConsumerResult ackConsumerResult = inventoryRedisExecutor
+                .executorAckInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
+        return ackConsumerResult;
+	}
 
-    @Override
-    public String dealMethodCode() {
-        return "skuRedisDeal";
-    }
+	@Override
+	public String dealMethodCode() {
+		return "skuRedisDeal";
+	}
 
-    @Override
-    public String dealMethodDesc() {
-        return "redis上以sku方式扣减库存";
-    }
+	@Override
+	public String dealMethodDesc() {
+		return "redis上以sku方式扣减库存";
+	}
 
-    @Override
-    public String getMagicCode() {
-        return magicCode;
-    }
+	@Override
+	public String getMagicCode() {
+		return magicCode;
+	}
 
-    @Override
-    public String getModuleEnglishName() {
-        return moduleEnglishName;
-    }
+	@Override
+	public String getModuleEnglishName() {
+		return moduleEnglishName;
+	}
 
-    @Override
-    public RedisTemplateFactory getRedisTemplateFactory() {
-        return redisTemplateFactory;
-    }
+	@Override
+	public RedisTemplateFactory getRedisTemplateFactory() {
+		return redisTemplateFactory;
+	}
 
-    public void setRedisTemplateFactory(RedisTemplateFactory redisTemplateFactory) {
-        this.redisTemplateFactory = redisTemplateFactory;
-    }
+	public void setRedisTemplateFactory(RedisTemplateFactory redisTemplateFactory) {
+		this.redisTemplateFactory = redisTemplateFactory;
+	}
 
-    @Override
-    public InventoryRedisExecutor getInventoryRedisExecutor() {
-        return inventoryRedisExecutor;
-    }
+	@Override
+	public InventoryRedisExecutor getInventoryRedisExecutor() {
+		return inventoryRedisExecutor;
+	}
 
-    public void setInventoryRedisExecutor(InventoryRedisExecutor inventoryRedisExecutor) {
-        this.inventoryRedisExecutor = inventoryRedisExecutor;
-    }
+	public void setInventoryRedisExecutor(InventoryRedisExecutor inventoryRedisExecutor) {
+		this.inventoryRedisExecutor = inventoryRedisExecutor;
+	}
 
-    @Override
-    public void afterPropertiesSetDo() {
-        this.redisTemplate = redisTemplateFactory.getRedisTemplate();
-        Assert.noNull(redisTemplate, "get redisTemplate error");
-        super.afterPropertiesSetDo();
+	@Override
+	public void afterPropertiesSetDo() {
+		this.redisTemplate = redisTemplateFactory.getRedisTemplate();
+		Assert.noNull(redisTemplate, "get redisTemplate error");
+		super.afterPropertiesSetDo();
 
-    }
+	}
 }

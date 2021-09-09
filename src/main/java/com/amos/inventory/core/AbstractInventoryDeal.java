@@ -51,13 +51,13 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 	protected abstract ConsumerInventoryResult doConsumerInventory(String version);
 
-	protected abstract FreezeInventoryResult doFreezeInventory(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters);
+	protected abstract FreezeInventoryResult doFreezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters);
 
 	protected abstract AddInventoryResult doAddInventory(InventoryLoaderResult inventoryLoaderResult);
 
 	protected abstract AckConsumerResult doAckConsumer(String version);
 
-	public void addInventory(String  inventoryCode, InventoryLoader inventoryLoader) {
+	public void addInventory(String inventoryCode, InventoryLoader inventoryLoader) {
 		InventoryLock inventoryLock = null;
 		AddInventoryResult addInventoryResult = null;
 		try {
@@ -88,7 +88,7 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 		}
 	}
 
-	public void freezeInventory(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters) {
+	public void freezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters) {
 
 		InventoryLock inventoryLock = null;
 		FreezeInventoryResult freezeInventoryResult = null;
@@ -273,7 +273,7 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 		}
 	}
 
-	private void afterFreezeInventory(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters, FreezeInventoryResult freezeInventoryResult) {
+	private void afterFreezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters, FreezeInventoryResult freezeInventoryResult) {
 		if (CollectionUtils.isNotEmpty(freezeInventoryListeners)) {
 			for (FreezeInventoryListener freezeInventoryListener : freezeInventoryListeners) {
 				freezeInventoryListener.afterFreezeInventory(version, inventoryNumMap, parameters, freezeInventoryResult);
@@ -281,7 +281,7 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 		}
 	}
 
-	private void onFreezeErrorDo(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters, Exception e) {
+	private void onFreezeErrorDo(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters, Exception e) {
 		if (CollectionUtils.isNotEmpty(freezeInventoryListeners)) {
 			for (FreezeInventoryListener freezeInventoryListener : freezeInventoryListeners) {
 				freezeInventoryListener.onErrorDo(version, inventoryNumMap, parameters, e);
@@ -289,7 +289,7 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 		}
 	}
 
-	private void beforeFreezeInventory(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters) {
+	private void beforeFreezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters) {
 		if (CollectionUtils.isNotEmpty(freezeInventoryListeners)) {
 			for (FreezeInventoryListener freezeInventoryListener : freezeInventoryListeners) {
 				freezeInventoryListener.beforeFreezeInventory(version, inventoryNumMap, parameters);
@@ -313,7 +313,7 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 		}
 	}
 
-	private void beforeAddInventory(String  inventoryCode) {
+	private void beforeAddInventory(String inventoryCode) {
 		if (CollectionUtils.isNotEmpty(addInventoryListeners)) {
 			for (AddInventoryListener addInventoryListener : addInventoryListeners) {
 				addInventoryListener.beforeAddInventory(inventoryCode);

@@ -15,4 +15,8 @@ public abstract class SkuDealConstant
     public final static String DEAD_FREEZE="deadCheckFreezeName";
 
     public final static String DEAD_ACK="deadAckName";
+
+    public final static String CHECK_FREEZE_TIMES_NAME="check_freeze_times";
+
+    public final static String WAIT_ACK_TIMES_NAME="wait_ack_times";
 }

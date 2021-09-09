@@ -9,9 +9,9 @@ import java.util.Map;
  * @since 2021/8/21 13:44
  */
 public interface FreezeInventoryListener extends InventoryListener {
-    void afterFreezeInventory(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters, FreezeInventoryResult freezeInventoryResult);
+    void afterFreezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters, FreezeInventoryResult freezeInventoryResult);
 
-    void onErrorDo(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters, Exception e);
+    void onErrorDo(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters, Exception e);
 
-    void beforeFreezeInventory(String version, Map<Long, Integer> inventoryNumMap, Map<String, String> parameters);
+    void beforeFreezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters);
 }
