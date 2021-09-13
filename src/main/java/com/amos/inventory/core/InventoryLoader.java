@@ -6,5 +6,5 @@ package com.amos.inventory.core;
  */
 @FunctionalInterface
 public interface InventoryLoader {
-    InventoryLoaderResult loadInventory(String inventoryCode, int quantity);
+    InventoryLoaderResult loadInventory(String inventoryCode);
 }

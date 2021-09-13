@@ -1,4 +1,4 @@
-package com.amos.inventory.constant;
+package com.amos.inventory.constant.skuDeal;
 
 /**
  * @author amos

@@ -1,4 +1,4 @@
-package com.amos.inventory.impl;
+package com.amos.inventory.impl.skuDeal;
 
 import java.util.Date;
 import java.util.Set;
@@ -6,7 +6,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amos.inventory.constant.SkuDealConstant;
+import com.amos.inventory.constant.skuDeal.SkuDealConstant;
 import com.amos.inventory.core.ActualCheck;
 import com.amos.inventory.core.InventoryChecker;
 import com.amos.inventory.core.InventoryDealKeyCreator;

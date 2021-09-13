@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.amos.inventory.impl.skuDeal.SkuDealRedisExecutor;
 import org.junit.Test;
 
-import com.amos.inventory.constant.SkuDealConstant;
+import com.amos.inventory.constant.skuDeal.SkuDealConstant;
 
 public class SkuDealRedisExecutorTest {
 

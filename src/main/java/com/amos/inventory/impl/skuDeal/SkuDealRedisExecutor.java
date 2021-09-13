@@ -1,4 +1,4 @@
-package com.amos.inventory.impl;
+package com.amos.inventory.impl.skuDeal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.amos.inventory.constant.skuDeal.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amos.inventory.constant.SkuDealConstant;
 import com.amos.inventory.core.InventoryRedisExecutor;
 import com.amos.inventory.core.RedisTemplate;
 import com.amos.inventory.exception.InventoryException;
@@ -45,7 +45,7 @@ public class SkuDealRedisExecutor implements InventoryRedisExecutor {
 		RELEASE_LUA = loadLua("/lua/skuDeal/release.lua");
 		CONSUMER_LUA = loadLua("/lua/skuDeal/consumer.lua");
 		ADD_LUA = loadLua("/lua/skuDeal/add.lua");
-		ACK_LUA=loadLua("/lua/skuDeal/ack.lua");
+		ACK_LUA = loadLua("/lua/skuDeal/ack.lua");
 	}
 
 	private static String loadLua(String luaAddress) {
@@ -73,8 +73,16 @@ public class SkuDealRedisExecutor implements InventoryRedisExecutor {
 		Assert.notEmptyString(delayTime, "delayTime is null");
 		List result = redisTemplate.executeLua(FREEZE_LUA, List.class, Arrays.asList(versionKey, checkFreezeName, delayTime, transformLuaTableString(inventoryKeyList)),
 				transformLuaTableString(inventoryNumList));
-
-		return null;
+		Assert.notEmptyCollection(result, "result is null");
+		Long resultCode = (Long) result.get(0);
+		SkuDealFreezeInventoryResultStatus resultEnum = SkuDealFreezeInventoryResultStatus.getByCode(resultCode.byteValue());
+		SkuDealFreezeInventoryResult skuDealFreezeInventoryResult = new SkuDealFreezeInventoryResult();
+		skuDealFreezeInventoryResult.setSkuDealFreezeInventoryResultStatus(resultEnum);
+		if (SkuDealFreezeInventoryResultStatus.NOT_ENOUGH_STOCK.equals(resultEnum)) {
+			Long dealInventoryLine = (Long) result.get(1);
+			skuDealFreezeInventoryResult.setCurrentDealLine(dealInventoryLine.intValue());
+		}
+		return skuDealFreezeInventoryResult;
 	}
 
 	@Override
@@ -82,7 +90,10 @@ public class SkuDealRedisExecutor implements InventoryRedisExecutor {
 		Assert.notEmptyString(inventoryKey, "executorAddInventory inventoryKey is null");
 		Assert.isTrue(quantity > 0, "executorAddInventory quantity is less than zero");
 		Long result = redisTemplate.executeLua(ADD_LUA, Long.class, Arrays.asList(inventoryKey), quantity);
-		return null;
+		Assert.noNull(result,"result is null");
+		SkuDealAddInventoryResult skuDealAddInventoryResult=new SkuDealAddInventoryResult();
+		skuDealAddInventoryResult.setSkuDealAddInventoryResultStatus(SkuDealAddInventoryResultStatus.getByCode(result.byteValue()));
+		return skuDealAddInventoryResult;
 	}
 
 	@Override
@@ -96,7 +107,10 @@ public class SkuDealRedisExecutor implements InventoryRedisExecutor {
 		Assert.notEmptyString(waitAckName, "waitAckName is null");
 		Assert.notEmptyString(deadCheckFreezeName, "deadCheckFreezeName is null");
 		Long result = redisTemplate.executeLua(CONSUMER_LUA, Long.class, Arrays.asList(versionKey, waitAckName, checkFreezeName, deadCheckFreezeName));
-		return null;
+		Assert.noNull(result,"result is null");
+		SkuDealConsumerInventoryResult skuDealConsumerInventoryResult = new SkuDealConsumerInventoryResult();
+		skuDealConsumerInventoryResult.setSkuDealConsumerInventoryResultStatus(SkuDealConsumerInventoryResultStatus.getByCode(result.byteValue()));
+		return skuDealConsumerInventoryResult;
 	}
 
 	@Override
@@ -108,7 +122,10 @@ public class SkuDealRedisExecutor implements InventoryRedisExecutor {
 		Assert.notEmptyString(checkFreezeName, "checkFreezeName is null");
 		Assert.notEmptyString(deadCheckFreezeName, "deadCheckFreezeName is null");
 		Long result = redisTemplate.executeLua(RELEASE_LUA, Long.class, Arrays.asList(versionKey, checkFreezeName, deadCheckFreezeName));
-		return null;
+		Assert.noNull(result,"result is null");
+		SkuDealReleaseInventoryResult skuDealReleaseInventoryResult = new SkuDealReleaseInventoryResult();
+		skuDealReleaseInventoryResult.setSkuDealReleaseInventoryResultStatus(SkuDealReleaseInventoryResultStatus.getByCode(result.byteValue()));
+		return skuDealReleaseInventoryResult;
 	}
 
 	@Override
@@ -120,7 +137,10 @@ public class SkuDealRedisExecutor implements InventoryRedisExecutor {
 		Assert.notEmptyString(waitAckName, "waitAckName is null");
 		Assert.notEmptyString(deadAckName, "deadAckName is null");
 		Long result = redisTemplate.executeLua(ACK_LUA, Long.class, Arrays.asList(versionKey, waitAckName, deadAckName));
-		return null;
+		Assert.noNull(result,"result is null");
+		SkuDealAckInventoryResult skuDealAckInventoryResult = new SkuDealAckInventoryResult();
+		skuDealAckInventoryResult.setSkuDealAckInventoryResultStatus(SkuDealAckInventoryResultStatus.getByCode(result.byteValue()));
+		return skuDealAckInventoryResult;
 	}
 
 	public String transformLuaTableString(List list) {

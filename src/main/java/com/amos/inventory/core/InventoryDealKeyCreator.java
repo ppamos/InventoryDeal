@@ -19,4 +19,6 @@ public interface InventoryDealKeyCreator {
 	String getDeadAckName();
 
 	String getVersionByVersionKey(String versionKey);
+
+	String getInventoryCodeByInventoryKey(String inventoryKey);
 }

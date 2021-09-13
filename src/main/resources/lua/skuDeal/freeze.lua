@@ -12,6 +12,13 @@ local result = {}
 
 local inventoryNumTemp = {}
 
+local havenInitInventory = redis.call('EXISTS',KEYS[1])
+
+if havenInitInventory==1  then
+
+    return {-2}
+end
+
 -- 先判断所有库存是否足够
 local function isStoreEnough()
     for i, v in ipairs(inventoryKeyList) do

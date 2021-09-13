@@ -1,11 +1,11 @@
-package com.amos.inventory.impl;
+package com.amos.inventory.impl.skuDeal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.amos.inventory.constant.SkuDealConstant;
+import com.amos.inventory.constant.skuDeal.SkuDealConstant;
 import com.amos.inventory.core.*;
 import com.amos.inventory.result.*;
 import com.amos.inventory.util.Assert;
@@ -43,13 +43,12 @@ public class InventorySkuRedisDeal extends AbstractInventoryDeal implements Inve
 
 	@Override
 	protected ConsumerInventoryResult doConsumerInventory(String version) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(SkuDealConstant.CHECK_FREEZE, inventoryDealKeyCreator.getCheckFreezeName());
-        parameters.put(SkuDealConstant.DEAD_FREEZE, inventoryDealKeyCreator.getDeadCheckFreezeName());
-        parameters.put(SkuDealConstant.WAIT_ACK,inventoryDealKeyCreator.getWaitAckName());
-        ConsumerInventoryResult consumerInventoryResult = inventoryRedisExecutor
-                .executorConsumerInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
-        return consumerInventoryResult;
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put(SkuDealConstant.CHECK_FREEZE, inventoryDealKeyCreator.getCheckFreezeName());
+		parameters.put(SkuDealConstant.DEAD_FREEZE, inventoryDealKeyCreator.getDeadCheckFreezeName());
+		parameters.put(SkuDealConstant.WAIT_ACK, inventoryDealKeyCreator.getWaitAckName());
+		ConsumerInventoryResult consumerInventoryResult = inventoryRedisExecutor.executorConsumerInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
+		return consumerInventoryResult;
 	}
 
 	@Override
@@ -83,21 +82,19 @@ public class InventorySkuRedisDeal extends AbstractInventoryDeal implements Inve
 
 	@Override
 	protected AddInventoryResult doAddInventory(InventoryLoaderResult inventoryLoaderResult) {
-        String inventoryCode = inventoryLoaderResult.getInventoryCode();
-        Integer loadQuantity = inventoryLoaderResult.getLoadQuantity();
-        AddInventoryResult addInventoryResult = inventoryRedisExecutor
-                .executorAddInventory(inventoryDealKeyCreator.getInventoryKey(inventoryCode), loadQuantity);
-        return addInventoryResult;
+		String inventoryCode = inventoryLoaderResult.getInventoryCode();
+		Integer loadQuantity = inventoryLoaderResult.getLoadQuantity();
+		AddInventoryResult addInventoryResult = inventoryRedisExecutor.executorAddInventory(inventoryDealKeyCreator.getInventoryKey(inventoryCode), loadQuantity);
+		return addInventoryResult;
 	}
 
 	@Override
 	protected AckConsumerResult doAckConsumer(String version) {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put(SkuDealConstant.WAIT_ACK,inventoryDealKeyCreator.getWaitAckName());
-        parameters.put(SkuDealConstant.DEAD_ACK,inventoryDealKeyCreator.getDeadAckName());
-        AckConsumerResult ackConsumerResult = inventoryRedisExecutor
-                .executorAckInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
-        return ackConsumerResult;
+		HashMap<String, String> parameters = new HashMap<>();
+		parameters.put(SkuDealConstant.WAIT_ACK, inventoryDealKeyCreator.getWaitAckName());
+		parameters.put(SkuDealConstant.DEAD_ACK, inventoryDealKeyCreator.getDeadAckName());
+		AckConsumerResult ackConsumerResult = inventoryRedisExecutor.executorAckInventory(inventoryDealKeyCreator.getVersionKey(version), parameters);
+		return ackConsumerResult;
 	}
 
 	@Override
@@ -141,8 +138,27 @@ public class InventorySkuRedisDeal extends AbstractInventoryDeal implements Inve
 	@Override
 	public void afterPropertiesSetDo() {
 		this.redisTemplate = redisTemplateFactory.getRedisTemplate();
+		if (inventoryRedisExecutor == null) {
+			inventoryRedisExecutor = new SkuDealRedisExecutor(redisTemplate);
+		}
 		Assert.noNull(redisTemplate, "get redisTemplate error");
 		super.afterPropertiesSetDo();
 
+	}
+
+	public InventoryDealKeyCreator getInventoryDealKeyCreator() {
+		return inventoryDealKeyCreator;
+	}
+
+	public void setInventoryDealKeyCreator(InventoryDealKeyCreator inventoryDealKeyCreator) {
+		this.inventoryDealKeyCreator = inventoryDealKeyCreator;
+	}
+
+	public int getOneTimeMaxFreezeSkuNum() {
+		return oneTimeMaxFreezeSkuNum;
+	}
+
+	public void setOneTimeMaxFreezeSkuNum(int oneTimeMaxFreezeSkuNum) {
+		this.oneTimeMaxFreezeSkuNum = oneTimeMaxFreezeSkuNum;
 	}
 }

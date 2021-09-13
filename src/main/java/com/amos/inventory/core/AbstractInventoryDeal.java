@@ -41,8 +41,6 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 	protected InventoryDealValidator validator;
 
-	protected int loadInventoryNum = 100;
-
 	private final static String GET_LOCK_ERROR_MESSAGE = "get Lock error";
 
 	private final static String RELEASE_LOCK_ERROR_MESSAGE = "release Lock error";
@@ -57,17 +55,18 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 	protected abstract AckConsumerResult doAckConsumer(String version);
 
-	public void addInventory(String inventoryCode, InventoryLoader inventoryLoader) {
+	public void addInventory(String inventoryCode, InventoryLoader inventoryLoader) throws InventoryLockException
+	{
 		InventoryLock inventoryLock = null;
 		AddInventoryResult addInventoryResult = null;
 		try {
 			inventoryLock = inventoryLockFactory.getLock(keyCreator.getAddInventoryKey(inventoryCode));
-			inventoryLock.Lock();
+			inventoryLock.lock();
 			this.beforeAddInventory(inventoryCode);
 			InventoryLoaderResult inventoryLoaderResult = null;
 
 			try {
-				inventoryLoaderResult = inventoryLoader.loadInventory(inventoryCode, loadInventoryNum);
+				inventoryLoaderResult = inventoryLoader.loadInventory(inventoryCode);
 				addInventoryResult = this.doAddInventory(inventoryLoaderResult);
 			} catch (Exception e) {
 				this.onAddErrorDo(e, inventoryCode);
@@ -76,25 +75,29 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 			this.afterAddInventory(inventoryCode, addInventoryResult);
 		} catch (InventoryLockException e) {
 			LOG.error(GET_LOCK_ERROR_MESSAGE, e);
+			throw e;
 		} finally {
 			if (null != inventoryLock) {
 				try {
 					inventoryLock.releaseLock();
 				} catch (InventoryLockException e) {
 					LOG.error(RELEASE_LOCK_ERROR_MESSAGE, e);
+					throw e;
 				}
 			}
 
 		}
 	}
 
-	public void freezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters) {
+	public void freezeInventory(String version, Map<String, Integer> inventoryNumMap, Map<String, String> parameters)
+			throws InventoryLockException
+	{
 
 		InventoryLock inventoryLock = null;
 		FreezeInventoryResult freezeInventoryResult = null;
 		try {
 			inventoryLock = inventoryLockFactory.getLock(keyCreator.getGlobalKey(version));
-			inventoryLock.Lock();
+			inventoryLock.lock();
 			this.beforeFreezeInventory(version, inventoryNumMap, parameters);
 			try {
 				freezeInventoryResult = this.doFreezeInventory(version, inventoryNumMap, parameters);
@@ -106,23 +109,26 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 		} catch (InventoryLockException e) {
 			LOG.error(GET_LOCK_ERROR_MESSAGE, e);
+			throw e;
 		} finally {
 			if (null != inventoryLock) {
 				try {
 					inventoryLock.releaseLock();
 				} catch (InventoryLockException e) {
 					LOG.error(RELEASE_LOCK_ERROR_MESSAGE, e);
+					throw e;
 				}
 			}
 		}
 	}
 
-	public void consumerInventory(String version) {
+	public void consumerInventory(String version) throws InventoryLockException
+	{
 		InventoryLock inventoryLock = null;
 		ConsumerInventoryResult consumerInventoryResult = null;
 		try {
 			inventoryLock = inventoryLockFactory.getLock(keyCreator.getGlobalKey(version));
-			inventoryLock.Lock();
+			inventoryLock.lock();
 			this.beforeConsumerInventory(version);
 			try {
 				consumerInventoryResult = this.doConsumerInventory(version);
@@ -134,23 +140,26 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 		} catch (InventoryLockException e) {
 			LOG.error(GET_LOCK_ERROR_MESSAGE, e);
+			throw e;
 		} finally {
 			if (null != inventoryLock) {
 				try {
 					inventoryLock.releaseLock();
 				} catch (InventoryLockException e) {
 					LOG.error(RELEASE_LOCK_ERROR_MESSAGE, e);
+					throw e;
 				}
 			}
 		}
 	}
 
-	public void releaseInventory(String version) {
+	public void releaseInventory(String version) throws InventoryLockException
+	{
 		InventoryLock inventoryLock = null;
 		ReleaseInventoryResult releaseInventoryResult = null;
 		try {
 			inventoryLock = inventoryLockFactory.getLock(keyCreator.getGlobalKey(version));
-			inventoryLock.Lock();
+			inventoryLock.lock();
 			this.beforeReleaseInventory(version);
 			try {
 				releaseInventoryResult = this.doReleaseInventory(version);
@@ -162,23 +171,26 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 		} catch (InventoryLockException e) {
 			LOG.error(GET_LOCK_ERROR_MESSAGE, e);
+			throw e;
 		} finally {
 			if (null != inventoryLock) {
 				try {
 					inventoryLock.releaseLock();
 				} catch (InventoryLockException e) {
 					LOG.error(RELEASE_LOCK_ERROR_MESSAGE, e);
+					throw e;
 				}
 			}
 		}
 	}
 
-	public void ackConsumer(String version) {
+	public void ackConsumer(String version) throws InventoryLockException
+	{
 		InventoryLock inventoryLock = null;
 		AckConsumerResult ackConsumerResult = null;
 		try {
 			inventoryLock = inventoryLockFactory.getLock(keyCreator.getGlobalKey(version));
-			inventoryLock.Lock();
+			inventoryLock.lock();
 			this.beforeAckConsumer(version);
 			try {
 				ackConsumerResult = this.doAckConsumer(version);
@@ -190,12 +202,14 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 		} catch (InventoryLockException e) {
 			LOG.error(GET_LOCK_ERROR_MESSAGE, e);
+			throw e;
 		} finally {
 			if (null != inventoryLock) {
 				try {
 					inventoryLock.releaseLock();
 				} catch (InventoryLockException e) {
 					LOG.error(RELEASE_LOCK_ERROR_MESSAGE, e);
+					throw e;
 				}
 			}
 		}
@@ -383,14 +397,6 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 	public void setValidator(InventoryDealValidator validator) {
 		this.validator = validator;
-	}
-
-	public int getLoadInventoryNum() {
-		return loadInventoryNum;
-	}
-
-	public void setLoadInventoryNum(int loadInventoryNum) {
-		this.loadInventoryNum = loadInventoryNum;
 	}
 
 	public static String getGetLockErrorMessage() {

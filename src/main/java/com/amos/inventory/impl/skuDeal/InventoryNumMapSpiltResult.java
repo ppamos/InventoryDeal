@@ -1,4 +1,4 @@
-package com.amos.inventory.impl;
+package com.amos.inventory.impl.skuDeal;
 
 import java.util.List;
 

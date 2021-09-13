@@ -23,7 +23,6 @@ public abstract class AbstractInventoryDealBuilder<T extends AbstractInventoryDe
     protected Comparator comparator = new SmallToLargeComparator();
     protected InventoryLockKeyCreator keyCreator;
     protected InventoryDealValidator validator;
-    protected int loadInventoryNum = 100;
 
     public T build()
     {

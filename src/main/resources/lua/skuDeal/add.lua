@@ -26,3 +26,5 @@ else
     doCreateInventory()
 end
 
+return 1
+
