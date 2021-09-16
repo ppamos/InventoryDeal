@@ -1,22 +1,22 @@
---keys  1.versionKey 2. waitAckName 3.checkFreezeName 4. deadFreezeName
+--keys  1.versionKey 2. waitAckName 3.checkFreezeName 4. deadFreezeName 5.statusName 6.bookAmountName7.inventoryKeyListName 8.amountNameSuffix
 -- status 1.冻结中 2.等待ack
 
 
-local status = redis.call("hget", KEYS[1], "status")
+local status = redis.call("hget", KEYS[1], KEYS[5])
 if status == false or tonumber(status) ~= 1 then
     return -1
 end
 
 
 local function doConsumerInventory(inventoryKey, currentInventoryKeyNum)
-    redis.call("HINCRBY", inventoryKey, "book_amount", -tonumber(currentInventoryKeyNum))
+    redis.call("HINCRBY", inventoryKey, KEYS[6], -tonumber(currentInventoryKeyNum))
 end
 
 local function doConsumer()
-    local inventoryKeyTable = loadstring("return" .. redis.call("hget", KEYS[1], "inventoryKeyList"))()
+    local inventoryKeyTable = loadstring("return" .. redis.call("hget", KEYS[1], KEYS[7]))()
     for i, v in ipairs(inventoryKeyTable) do
         local inventoryKey = inventoryKeyTable[i]
-        local currentInventoryKeyNum = redis.call("hget", KEYS[1], inventoryKey .. "_amount")
+        local currentInventoryKeyNum = redis.call("hget", KEYS[1], inventoryKey .. KEYS[8])
         doConsumerInventory(inventoryKey, currentInventoryKeyNum)
     end
     redis.call("hset", KEYS[1], status, 2)

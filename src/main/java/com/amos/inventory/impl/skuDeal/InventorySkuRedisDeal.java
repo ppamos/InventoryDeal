@@ -7,6 +7,10 @@ import java.util.Map;
 
 import com.amos.inventory.constant.skuDeal.SkuDealConstant;
 import com.amos.inventory.core.*;
+import com.amos.inventory.redis.InventoryRedisDeal;
+import com.amos.inventory.redis.InventoryRedisExecutor;
+import com.amos.inventory.redis.RedisTemplate;
+import com.amos.inventory.redis.RedisTemplateFactory;
 import com.amos.inventory.result.*;
 import com.amos.inventory.util.Assert;
 import com.amos.inventory.util.MapUtils;
@@ -15,13 +19,8 @@ import com.amos.inventory.util.MapUtils;
  * @author amos
  * @since 2021/8/22 10:59
  */
-public class InventorySkuRedisDeal extends AbstractInventoryDeal implements InventoryRedisDeal {
-
-	private String magicCode;
-
-	private String moduleEnglishName;
-
-	private RedisTemplateFactory redisTemplateFactory;
+public class InventorySkuRedisDeal extends AbstractInventoryDeal implements InventoryRedisDeal
+{
 
 	private InventoryRedisExecutor inventoryRedisExecutor;
 
@@ -107,23 +106,14 @@ public class InventorySkuRedisDeal extends AbstractInventoryDeal implements Inve
 		return "redis上以sku方式扣减库存";
 	}
 
-	@Override
-	public String getMagicCode() {
-		return magicCode;
+	@Override public RedisTemplate getRedisTemplate()
+	{
+		return redisTemplate;
 	}
 
-	@Override
-	public String getModuleEnglishName() {
-		return moduleEnglishName;
-	}
-
-	@Override
-	public RedisTemplateFactory getRedisTemplateFactory() {
-		return redisTemplateFactory;
-	}
-
-	public void setRedisTemplateFactory(RedisTemplateFactory redisTemplateFactory) {
-		this.redisTemplateFactory = redisTemplateFactory;
+	public void setRedisTemplate(RedisTemplate redisTemplate)
+	{
+		this.redisTemplate = redisTemplate;
 	}
 
 	@Override
@@ -137,11 +127,9 @@ public class InventorySkuRedisDeal extends AbstractInventoryDeal implements Inve
 
 	@Override
 	public void afterPropertiesSetDo() {
-		this.redisTemplate = redisTemplateFactory.getRedisTemplate();
 		if (inventoryRedisExecutor == null) {
 			inventoryRedisExecutor = new SkuDealRedisExecutor(redisTemplate);
 		}
-		Assert.noNull(redisTemplate, "get redisTemplate error");
 		super.afterPropertiesSetDo();
 
 	}

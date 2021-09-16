@@ -41,6 +41,8 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 
 	protected InventoryDealValidator validator;
 
+
+
 	private final static String GET_LOCK_ERROR_MESSAGE = "get Lock error";
 
 	private final static String RELEASE_LOCK_ERROR_MESSAGE = "release Lock error";
@@ -406,6 +408,17 @@ public abstract class AbstractInventoryDeal implements InventoryDealDefinition, 
 	public static String getReleaseLockErrorMessage() {
 		return RELEASE_LOCK_ERROR_MESSAGE;
 	}
+
+	public List<AckInventoryListener> getAckInventoryListeners()
+	{
+		return ackInventoryListeners;
+	}
+
+	public void setAckInventoryListeners(List<AckInventoryListener> ackInventoryListeners)
+	{
+		this.ackInventoryListeners = ackInventoryListeners;
+	}
+
 
 	@Override
 	public void afterPropertiesSetDo() {

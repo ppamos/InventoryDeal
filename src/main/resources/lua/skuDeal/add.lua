@@ -1,12 +1,12 @@
--- KEY 1.inventoryKey
+-- KEY 1.inventoryKey 2.bookAmountName 3.stockAmountName
 -- argv 1.库存数量
 
 
 local havenInitInventory = redis.call('EXISTS',KEYS[1])
 
-local bookAmount = 'book_amount'
+local bookAmount = KEYS[2]
 
-local stockAmount = 'stock_amount'
+local stockAmount = KEYS[3]
 
 local initBookAmount = '0'
 

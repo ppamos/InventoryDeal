@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.amos.inventory.impl.skuDeal.SkuDealRedisExecutor;
+import com.amos.inventory.redis.DefaultRedisTemplate;
 import org.junit.Test;
 
 import com.amos.inventory.constant.skuDeal.SkuDealConstant;
@@ -14,7 +15,7 @@ public class SkuDealRedisExecutorTest {
 
 	@Test
 	public void executorAddInventory() {
-		DefaultRedisTemplate defaultRedisTemplate = new DefaultRedisTemplate(new TestJedisFactory());
+		DefaultRedisTemplate defaultRedisTemplate = new DefaultRedisTemplate(new TestJedisFactory().getJedis());
 		SkuDealRedisExecutor skuDealRedisExecutor = new SkuDealRedisExecutor(defaultRedisTemplate);
 		skuDealRedisExecutor.executorAddInventory("cis_inventory_1", 100);
 		skuDealRedisExecutor.executorAddInventory("cis_inventory_2", 100);
@@ -23,7 +24,7 @@ public class SkuDealRedisExecutorTest {
 
 	@Test
 	public void executorFreezeInventory() {
-		DefaultRedisTemplate defaultRedisTemplate = new DefaultRedisTemplate(new TestJedisFactory());
+		DefaultRedisTemplate defaultRedisTemplate = new DefaultRedisTemplate(new TestJedisFactory().getJedis());
 		SkuDealRedisExecutor skuDealRedisExecutor = new SkuDealRedisExecutor(defaultRedisTemplate);
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put(SkuDealConstant.CHECK_FREEZE, "cis_check_freeze_name");
@@ -35,8 +36,7 @@ public class SkuDealRedisExecutorTest {
 	public void transformLuaTableString()
 	{
 		List<String> strings = Arrays.asList("cis_inventory_1","cis_inventory_2","cis_inventory_3");
-		DefaultRedisTemplate defaultRedisTemplate = new DefaultRedisTemplate(new TestJedisFactory());
+		DefaultRedisTemplate defaultRedisTemplate = new DefaultRedisTemplate(new TestJedisFactory().getJedis());
 		SkuDealRedisExecutor skuDealRedisExecutor = new SkuDealRedisExecutor(defaultRedisTemplate);
-		System.out.println(skuDealRedisExecutor.transformLuaTableString(strings));
 	}
 }

@@ -7,5 +7,5 @@ package com.amos.inventory.core;
 public interface InventoryLoaderResult {
     String getInventoryCode();
 
-    Integer getLoadQuantity();
+    int getLoadQuantity();
 }

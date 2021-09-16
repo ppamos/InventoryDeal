@@ -1,7 +1,7 @@
--- keys 1.versionKey 2.waitAckName 3.deadAckName
+-- keys 1.versionKey 2.waitAckName 3.deadAckName 4.stautsName
 
 
-local status = redis.call("hget", KEYS[1], "status")
+local status = redis.call("hget", KEYS[1], KEYS[4])
 if status == false or tonumber(status) ~= 2 then
     return -1
 end

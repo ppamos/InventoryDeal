@@ -1,12 +1,10 @@
-package com.amos.inventory.impl;
+package com.amos.inventory.redis;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.amos.inventory.core.JedisFactory;
-import com.amos.inventory.core.RedisTemplate;
 import com.amos.inventory.util.Assert;
 import com.amos.inventory.util.CollectionUtils;
 import com.amos.inventory.util.StringUtils;
@@ -16,8 +14,8 @@ import redis.clients.jedis.Jedis;
 public class DefaultRedisTemplate implements RedisTemplate {
 	private Jedis jedis;
 
-	public DefaultRedisTemplate(JedisFactory jedisFactory) {
-		this.jedis = jedisFactory.getJedis();
+	public DefaultRedisTemplate(Jedis jedis) {
+		this.jedis = jedis;
 	}
 
 	@Override

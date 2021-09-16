@@ -1,6 +1,5 @@
-package com.amos.inventory.impl;
+package com.amos.inventory.lock;
 
-import com.amos.inventory.lock.InventoryLockKeyCreator;
 import com.amos.inventory.util.Assert;
 
 public class DefaultInventoryLockKeyCreator implements InventoryLockKeyCreator {

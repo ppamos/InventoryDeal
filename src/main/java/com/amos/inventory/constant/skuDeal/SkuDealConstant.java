@@ -19,4 +19,14 @@ public abstract class SkuDealConstant
     public final static String CHECK_FREEZE_TIMES_NAME="check_freeze_times";
 
     public final static String WAIT_ACK_TIMES_NAME="wait_ack_times";
+
+    public final static String STOCK_AMOUNT_NAME="stock_amount";
+
+    public final static String BOOK_AMOUNT_NAME="book_amount";
+
+    public final static String INVENTORY_KEY_LIST_NAME="inventory_key_list";
+
+    public final static String STATUS_NAME="status";
+
+    public final static String AMOUNT_NAME_SUFFIX="_amount";
 }

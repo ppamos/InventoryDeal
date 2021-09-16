@@ -1,8 +1,4 @@
-package com.amos.inventory.impl;
-
-import com.amos.inventory.core.JedisFactory;
-import com.amos.inventory.core.RedisTemplate;
-import com.amos.inventory.core.RedisTemplateFactory;
+package com.amos.inventory.redis;
 
 public class DefaultRedisTemplateFactory implements RedisTemplateFactory
 {
@@ -15,6 +11,6 @@ public class DefaultRedisTemplateFactory implements RedisTemplateFactory
 
     @Override public RedisTemplate getRedisTemplate()
     {
-        return new DefaultRedisTemplate(jedisFactory);
+        return new DefaultRedisTemplate(jedisFactory.getJedis());
     }
 }

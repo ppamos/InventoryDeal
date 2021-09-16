@@ -1,4 +1,4 @@
-package com.amos.inventory.core;
+package com.amos.inventory.redis;
 
 import java.util.Set;
 

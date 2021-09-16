@@ -10,7 +10,7 @@ import com.amos.inventory.constant.skuDeal.SkuDealConstant;
 import com.amos.inventory.core.ActualCheck;
 import com.amos.inventory.core.InventoryChecker;
 import com.amos.inventory.core.InventoryDealKeyCreator;
-import com.amos.inventory.core.RedisTemplate;
+import com.amos.inventory.redis.RedisTemplate;
 import com.amos.inventory.exception.InventoryLockException;
 import com.amos.inventory.lock.InventoryLock;
 import com.amos.inventory.lock.InventoryLockFactory;

@@ -1,22 +1,23 @@
--- keys 1.versionKey 2.checkFreezeName 3.delayTime 4.inventoryKeyList
+-- keys 1.versionKey 2.checkFreezeName 3.delayTime 4.inventoryKeyList 5.stockAmountName 6.bookAmountName 7.inventoryKeyListName
+-- 8.checkFreezeTimesName 9.statusName 10waitAckTimesName 11.amountNameSuffix
 -- argv 1.inventoryNumList
 
 local inventoryKeyList = loadstring("return" .. KEYS[4])()
 
 local inventoryNumList = loadstring("return" .. ARGV[1])()
 
-local stockAmount = 'stock_amount'
-local bookAmount = 'book_amount'
+local stockAmount = KEYS[5]
+local bookAmount = KEYS[6]
 
 local result = {}
 
 local inventoryNumTemp = {}
 
-local havenInitInventory = redis.call('EXISTS',KEYS[1])
+local havenInitInventory = redis.call('EXISTS', KEYS[1])
 
-if havenInitInventory==1  then
+if havenInitInventory == 1 then
 
-    return {-2}
+    return { -2 }
 end
 
 -- 先判断所有库存是否足够
@@ -46,9 +47,9 @@ local function doJoinWaitFreezeSet()
 end
 
 local function doCreatOrder()
-    redis.call("HMSET", KEYS[1], "inventoryKeyList", KEYS[4], "freezeTimes", 0, "status", 1)
+    redis.call("HMSET", KEYS[1], KEYS[7], KEYS[4], KEYS[8], 0, KEYS[9], 1, KEYS[10], 0)
     for i, v in ipairs(inventoryKeyList) do
-        local inventoryKeyNum = inventoryKeyList[i] .. "_amount"
+        local inventoryKeyNum = inventoryKeyList[i] .. KEYS[11]
         redis.call("hset", KEYS[1], inventoryKeyNum, inventoryNumList[i])
     end
 end
@@ -64,7 +65,7 @@ local function doFreezeStock()
         local afterStockNum = tonumber(currentStoreNum) - tonumber(inventoryNumList[i])
         local currentBookAmount = redis.call("HGET", inventoryKey, bookAmount)
         local afterBookAmount = tonumber(currentBookAmount) + tonumber(inventoryNumList[i])
-        redis.call('hmset',inventoryKey,stockAmount,afterStockNum,bookAmount,afterBookAmount)
+        redis.call('hmset', inventoryKey, stockAmount, afterStockNum, bookAmount, afterBookAmount)
     end
 end
 
