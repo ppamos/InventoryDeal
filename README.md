@@ -40,4 +40,4 @@ InventorySkuRedisDeal.class 对于订单系统，它可能关注的点是库存i
 
 ##### 库存组件redis上的数据模型
 
-![](.\static\redis模型.jpg)
+![](https://github.com/ppamos/InventoryDeal/blob/main/static/redis%E6%A8%A1%E5%9E%8B.jpg)
