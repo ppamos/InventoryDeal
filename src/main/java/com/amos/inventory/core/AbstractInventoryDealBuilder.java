@@ -16,13 +16,6 @@ import com.amos.inventory.lock.InventoryLockKeyCreator;
  * @since 2021/8/22 10:48
  */
 public abstract class AbstractInventoryDealBuilder<T extends AbstractInventoryDeal> {
-    protected List<AddInventoryListener> addInventoryListeners = new ArrayList<>();
-    protected List<FreezeInventoryListener> freezeInventoryListeners = new ArrayList<>();
-    protected List<ConsumerInventoryListener> consumerInventoryListeners = new ArrayList<>();
-    protected List<ReleaseInventoryListener> releaseInventoryListeners = new ArrayList<>();
-    protected Comparator comparator = new SmallToLargeComparator();
-    protected InventoryLockKeyCreator keyCreator;
-    protected InventoryDealValidator validator;
 
     public T build()
     {
