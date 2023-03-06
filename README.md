@@ -20,24 +20,24 @@ InventorySkuRedisDeal.class 对于订单系统，它可能关注的点是库存i
 
 ##### 高性能库存组件接口依赖关系
 
-![接口依赖关系](https://github.com/ppamos/InventoryDeal/blob/main/static/%E5%BA%93%E5%AD%98%E7%BB%84%E4%BB%B6%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1.jpg?raw=true)
+![接口依赖关系](https://gitee.com/ppamos/inventory-deal-1/raw/main/static/%E5%BA%93%E5%AD%98%E7%BB%84%E4%BB%B6%E6%8E%A5%E5%8F%A3%E5%B1%82%E8%AE%BE%E8%AE%A1.jpg)
 
 ##### 库存组件状态流转图
 
-![](https://github.com/ppamos/InventoryDeal/blob/main/static/%E5%BA%93%E5%AD%98%E6%B5%81%E8%BD%AC%E7%9A%84%E5%90%84%E4%B8%AA%E7%8A%B6%E6%80%81.jpg?raw=true)
+![](https://gitee.com/ppamos/inventory-deal-1/raw/main/static/%E5%BA%93%E5%AD%98%E6%B5%81%E8%BD%AC%E7%9A%84%E5%90%84%E4%B8%AA%E7%8A%B6%E6%80%81.jpg)
 
 ##### 库存组件生命周期流转图
 
-![](https://github.com/ppamos/InventoryDeal/blob/main/static/%E5%BA%93%E5%AD%98%E6%93%8D%E4%BD%9C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%95%B0%E6%8D%AE%E6%B5%81%E8%BD%AC%E5%9B%BE.jpg?raw=true)
+![](https://gitee.com/ppamos/inventory-deal-1/raw/main/static/%E5%BA%93%E5%AD%98%E6%93%8D%E4%BD%9C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%95%B0%E6%8D%AE%E6%B5%81%E8%BD%AC%E5%9B%BE.jpg)
 
 ##### 库存组件冻结
 
-![](https://github.com/ppamos/InventoryDeal/blob/main/static/%E5%BA%93%E5%AD%98%E5%86%BB%E7%BB%93.jpg?raw=true)
+![](https://gitee.com/ppamos/inventory-deal-1/raw/main/static/%E5%BA%93%E5%AD%98%E5%86%BB%E7%BB%93.jpg)
 
 ##### 库存组件消耗
 
-![](https://github.com/ppamos/InventoryDeal/blob/main/static/%E5%BA%93%E5%AD%98%E6%B6%88%E8%80%97.jpg?raw=true)
+![](https://gitee.com/ppamos/inventory-deal-1/raw/main/static/%E5%BA%93%E5%AD%98%E6%B6%88%E8%80%97.jpg)
 
 ##### 库存组件redis上的数据模型
 
-![](https://github.com/ppamos/InventoryDeal/blob/main/static/redis%E6%A8%A1%E5%9E%8B.jpg?raw=true)
+![](https://gitee.com/ppamos/inventory-deal-1/raw/main/static/redis%E6%A8%A1%E5%9E%8B.jpg)
